@@ -6,3 +6,5 @@
 
 # -- Uninstall all package(s) --
 # $ pip freeze | xargs pip uninstall -y
+
+git+https://github.com/PaulMarisOUMary/Snipy@477571de0a23098b2b308036bd04ca0b26c56274
