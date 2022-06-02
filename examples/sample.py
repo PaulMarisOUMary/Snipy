@@ -6,8 +6,10 @@ inter = snipy.Interface()
 
 while True:
     try:
-        inter.recv()
+        print(inter.recv())
     except KeyboardInterrupt:
         break
-    else:
-        print("Exit now..")
+    except Exception as e:
+        print(type(e), e)
+        break
+inter.close()
