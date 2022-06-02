@@ -35,16 +35,19 @@ class IPV4Connection(ctypes.Structure):
         ("version",         ctypes.c_ubyte, 4),
         ("header_length",   ctypes.c_ubyte, 4),
         ("type_of_service", ctypes.c_ubyte, 8),
-        ("total_length",    ctypes.c_ubyte, 16),
-        ("identification",  ctypes.c_ubyte, 16),
+        ("total_length",    ctypes.c_ushort, 16),
+        ("identification",  ctypes.c_ushort, 16),
         ("flags",           ctypes.c_ubyte, 3),
-        ("fragment_offset", ctypes.c_ubyte, 13),
+        ("fragment_offset", ctypes.c_ushort, 13),
         ("time_to_leave",   ctypes.c_ubyte, 8),
         ("protocol",        ctypes.c_ubyte, 8),
-        ("header_checksum", ctypes.c_ubyte, 16),
-        ("source",          ctypes.c_ubyte, 32),
-        ("destination",     ctypes.c_ubyte, 32)
+        ("header_checksum", ctypes.c_ushort, 16),
+        ("source",          ctypes.c_uint32, 32),
+        ("destination",     ctypes.c_uint32, 32)
     ]
+
+    def __new__(cls, raw_data, _):
+        return cls.from_buffer_copy(raw_data)
 
     def __init__(self, raw_data: bytes, host: tuple[str, int]):
         self.raw_data = raw_data
