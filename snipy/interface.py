@@ -4,32 +4,17 @@ from .system import SYSTEM, HOST
 import socket
 
 class Interface():
-    def __init__(self, socket_family = socket.AF_INET) -> None:
-        if SYSTEM == "linux":
-            socketProtocol = socket.IPPROTO_TCP
-        elif SYSTEM == "windows":
-            socketProtocol = socket.IPPROTO_IP
-        elif SYSTEM == "darwin":
-            socketProtocol = socket.IPPROTO_ICMP
-        else:
-            raise ValueError("Unsupported system")
+    def __init__(self, 
+        socket_family: socket.AddressFamily = socket.AF_INET,
+        socket_type: socket.SocketKind = socket.SOCK_STREAM,
+        socket_protocol: int = 0
+        ) -> None:
 
-        # Create a raw socket and bind it to the public interface
         self.__sock = socket.socket(
             family=socket_family, 
-            type=socket.SOCK_RAW, 
-            proto=socketProtocol
+            type=socket_type, 
+            proto=socket_protocol
         )
-        self.__sock.bind((HOST, 0))
 
-        # Include IP headers
-        self.__sock.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
-
-        # Receive all packages
-        self.__sock.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
-
-    def close(self) -> None:
-        self.__sock.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)
-
-    def recv(self) -> IPV4Connection:
-        return IPV4Connection(*self.__sock.recvfrom(65565))
+    def recv(self, x = 0xffff) -> bytes:
+        return self.__sock.recv(x)
